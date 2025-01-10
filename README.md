@@ -27,10 +27,10 @@ The heatmap is generated dynamically within **5 seconds**, leveraging a custom r
 Below are some screenshots showcasing the application's interface and functionality:  
 
 1. **Main Page**:  
-   ![Main Page](path/to/login.png)  
+   ![Main Page](login.png)  
 
 1. **Heatmap Overview**:  
-   ![Heatmap Overview](path/to/dashboard.png)  
+   ![Heatmap Overview](dashboard.png)  
 
 ---
 
