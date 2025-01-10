@@ -19,7 +19,7 @@ The heatmap is generated dynamically within **5 seconds**, leveraging a custom r
 - **Interactive Map Interface**:  
   Users can select a starting point, time, and mode of transport (bus, tram, train) through an intuitive UI.  
 - **High Performance**:  
-  Ensures graph creation and heatmap calculations are efficient, delivering results in under 5 seconds.  
+  Ensures graph creation and heatmap calculations are efficient, delivering results in under 10 seconds.  
 
 ---
 
