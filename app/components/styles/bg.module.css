@@ -1,0 +1,24 @@
+.background {
+    display: grid;
+    grid-template-rows: 20px 1fr 20px; 
+    align-items: center; 
+    justify-items: center; 
+    min-height: 100vh;
+    padding: 32px;
+    padding-bottom: 80px; 
+    gap: 64px;
+    font-family: var(--font-geist-sans); 
+
+    background-image: url('../assets/bg.png');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    background-attachment: fixed;
+  }
+.searchBg{
+  background-image: url('../assets/searchbg.png');
+  background-size: cover;
+  background-position: center bottom;
+  height: 100vh;
+  background-attachment: fixed;
+}

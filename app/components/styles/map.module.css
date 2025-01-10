@@ -1,0 +1,13 @@
+.mapCont {
+    margin-top: 20px;
+
+    width: calc(100% - 30px);      
+    height: calc(100% - 35px);  
+    overflow: hidden; 
+
+    background-color: #ffffff;
+    border-radius: 10px 10px 10px 10px;
+    -webkit-box-shadow: 3px 5px 21px -4px #42445a;
+    -moz-box-shadow: 3px 5px 21px -4px #42445a;
+    box-shadow: 3px 5px 21px -4px #42445a; 
+  }

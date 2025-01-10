@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa OSM z Ikoną i Punktami Przystanków</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css"> <!-- Zewnętrzny plik CSS -->
+</head>
+<body>
+
+<div id="map"></div>
+<div class="icon" id="icon"></div>
+<div class="info" id="info">Witaj w Gdańsku!</div>
+
+<!-- Form controls for selecting stops and routes -->
+<div id="controls">
+    <select id="stop1"></select>
+    <select id="stop2"></select>
+    <button id="highlight">Zaznacz przystanki</button>
+    <select id="routeSelect">
+        <option value="">Wybierz Route ID</option>
+    </select>
+    <button id="fetchRoute">Fetch and Draw Route</button>
+    <div id="travelTime"></div> <!-- Element, w którym wyświetlany będzie czas przejazdu -->
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    const map = L.map('map').setView([54.3520, 18.6466], 13);
+    const markers = {};
+    let polyline;
+
+    const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    fetch('stops.json')
+        .then(response => response.json())
+        .then(data => {
+            const stop1Select = document.getElementById('stop1');
+            const stop2Select = document.getElementById('stop2');
+
+            data.forEach(stop => {
+                const marker = L.marker([stop.stop_lat, stop.stop_lon]).addTo(map);
+                marker.bindPopup(stop.stop_name);
+                markers[stop.stop_name] = marker;
+
+                const option1 = document.createElement('option');
+                option1.value = stop.stop_name;
+                option1.textContent = stop.stop_name;
+                stop1Select.appendChild(option1);
+
+                const option2 = document.createElement('option');
+                option2.value = stop.stop_name;
+                option2.textContent = stop.stop_name;
+                stop2Select.appendChild(option2);
+            });
+        })
+        .catch(error => console.error('Error loading stops:', error));
+
+        function fetchMessages() {
+            fetch('http://localhost:3000/api/messages')
+                .then(response => response.json())
+                .then(data => {
+                    const infoElement = document.getElementById('info');
+                    const iconElement = document.getElementById('icon'); // Pobieramy ikonę
+
+                    if (data && data.komunikaty && data.komunikaty.length > 0) {
+                        const komunikat = data.komunikaty[0]; // Wyświetlamy pierwszy komunikat
+                        infoElement.innerHTML = `
+                            <strong>${komunikat.tytul}</strong><br>
+                            ${komunikat.tresc}<br>
+                            <em>Od: ${komunikat.data_rozpoczecia}<br>
+                            Do: ${komunikat.data_zakonczenia}</em>
+                        `;
+                        iconElement.classList.add('red-alert'); // Dodajemy klasę zmieniającą kolor na czerwony
+                    } else {
+                        infoElement.innerHTML = 'Brak dostępnych komunikatów.';
+                        iconElement.classList.remove('red-alert'); // Usuwamy klasę, jeśli nie ma komunikatów
+                    }
+                })
+                .catch(error => console.error('Error fetching messages:', error));
+        }
+
+    // Call the function on page load and refresh messages every 2 minutes
+    fetchMessages();
+    setInterval(fetchMessages, 120000);
+
+    // Handle icon click to show/hide the message
+    const iconElement = document.getElementById('icon');
+    iconElement.addEventListener('click', () => {
+        iconElement.classList.toggle('active');
+        const infoElement = document.getElementById('info');
+        infoElement.style.display = iconElement.classList.contains('active') ? 'block' : 'none';
+    });
+
+
+    const routesDataUrl = 'https://ckan.multimediagdansk.pl/dataset/c24aa637-3619-4dc2-a171-a23eec8f2172/resource/22313c56-5acf-41c7-a5fd-dc5dc72b3851/download/routes.json';
+    const shapeDataUrl = 'https://ckan.multimediagdansk.pl/dataset/c24aa637-3619-4dc2-a171-a23eec8f2172/resource/da610d2a-7f54-44d1-b409-c1a7bdb4d3a4/download/shapes.json';
+    const stopTimesUrl = 'https://ckan.multimediagdansk.pl/dataset/c24aa637-3619-4dc2-a171-a23eec8f2172/resource/a023ceb0-8085-45f6-8261-02e6fcba7971/download/stoptimes.json';
+
+    let routeNameMap = {};
+
+    function fetchRouteNames() {
+        return fetch(routesDataUrl)
+            .then(response => response.json())
+            .then(data => {
+                const today = new Date(); // Pobiera dzisiejszą datę
+                const year = today.getFullYear(); // Pobiera rok
+                const month = String(today.getMonth() + 1).padStart(2, '0'); // Pobiera miesiąc (dodaje 1, bo miesiące są indeksowane od 0) i formatuje do dwóch cyfr
+                const day = String(today.getDate()).padStart(2, '0'); // Pobiera dzień i formatuje do dwóch cyfr
+
+                const formattedDate = `${year}-${month}-${day}`; // Tworzy sformatowaną datę w formacie 'YYYY-MM-DD'
+                //console.log(formattedDate)
+                const routes = data[formattedDate].routes;
+                routes.forEach(route => {
+                    routeNameMap[route.routeId] = route.routeLongName;
+                });
+            })
+            .catch(error => console.error('Error fetching route names:', error));
+    }
+
+    function populateRouteSelect() {
+        fetch(shapeDataUrl)
+            .then(response => response.json())
+            .then(data => {
+                const routeSelect = document.getElementById('routeSelect');
+                const routeIds = new Set();
+
+                for (const date in data) {
+                    data[date].forEach(link => {
+                        const urlParams = new URLSearchParams(new URL(link).search);
+                        const routeId = urlParams.get('routeId');
+                        routeIds.add(routeId);
+                    });
+                }
+
+                routeIds.forEach(routeId => {
+                    const option = document.createElement('option');
+                    option.value = routeId;
+                    option.textContent = routeNameMap[routeId] || `Route ID: ${routeId}`;
+                    routeSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching shape data:', error));
+    }
+
+    window.onload = function() {
+        fetchRouteNames().then(() => {
+            populateRouteSelect();
+        });
+    };
+
+    function fetchRouteData(routeId) {
+        fetch(shapeDataUrl)
+            .then(response => response.json())
+            .then(data => {
+                let selectedLinks = [];
+
+                for (const date in data) {
+                    selectedLinks = data[date].filter(link => {
+                        const urlParams = new URLSearchParams(new URL(link).search);
+                        return urlParams.get('routeId') === routeId;
+                    });
+                }
+
+                if (selectedLinks.length > 0) {
+                    fetch(selectedLinks[0])
+                        .then(res => res.json())
+                        .then(routeData => {
+                            if (routeData && routeData.coordinates) {
+                                const correctedCoordinates = routeData.coordinates.map(coord => [coord[1], coord[0]]);
+                                drawRoute(correctedCoordinates);
+                            }
+                        })
+                        .catch(error => console.error('Error fetching route data:', error));
+                }
+            })
+            .catch(error => console.error('Error fetching route data:', error));
+    }
+
+    function drawRoute(routeCoordinates) {
+        if (polyline) {
+            map.removeLayer(polyline);
+        }
+        polyline = L.polyline(routeCoordinates, { color: 'blue' }).addTo(map);
+        map.fitBounds(polyline.getBounds());
+    }
+
+    // Fetch stop times for the selected route
+    function fetchStopTimes(routeId) {
+        fetch(stopTimesUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data[routeId] && data[routeId].length > 0) {
+                    const stopTimesLink = data[routeId][0];
+                    fetchStopTimeDetails(stopTimesLink);
+                }
+            })
+            .catch(error => console.error('Error fetching stop times:', error));
+    }
+
+    // Fetch stop time details and calculate travel time
+   
+    function fetchStopTimeDetails(link) {
+        fetch(link)
+            .then(response => response.json())
+            .then(data => {
+                const stopTimes = data.stopTimes;
+                if (stopTimes.length > 0) {
+                    const tripId = stopTimes[0].tripId;
+                    
+                    const filteredTimes = stopTimes.filter(st => st.tripId === tripId);
+
+                    const uniqueStops = [];
+                    const uniqueStopTimes = filteredTimes.filter(st => {
+                        if (!uniqueStops.includes(st.stopId)) {
+                            uniqueStops.push(st.stopId);
+                            return true; // Dodaj tylko unikalne stopId
+                     }
+                        return false;
+                     });
+
+                    // Use first departure time and last arrival time for this trip
+                    // The problem could be that the stopId repeats
+                    const firstDepartureTime = getTime(uniqueStopTimes[0].departureTime);
+                    const lastArrivalTime = getTime(uniqueStopTimes[uniqueStopTimes.length - 1].arrivalTime)
+                    
+
+                    // Calculate the travel time difference in minutes
+                    const travelTime = calculateTimeDifference(firstDepartureTime, lastArrivalTime);
+                    displayTravelTime(travelTime);
+                }
+            })
+            .catch(error => console.error('Error fetching stop time details:', error));
+    }
+           
+    
+            
+    // Extract time (HH:mm) from a datetime string
+    function getTime(dateTimeString) {
+        return dateTimeString.split("T")[1].slice(0, 5);  // Extract the HH:mm part
+    }
+
+    // Calculate the time difference in minutes between two times (HH:mm)
+    function calculateTimeDifference(startTime, endTime) {
+        const [startHours, startMinutes] = startTime.split(':').map(Number);
+        const [endHours, endMinutes] = endTime.split(':').map(Number);
+
+        const startTotalMinutes = startHours * 60 + startMinutes;
+        
+        const endTotalMinutes = endHours * 60 + endMinutes;
+        // if next day  24*60  endTotalMinutes - startTotalMinutes;
+        const TotalTime = endTotalMinutes - startTotalMinutes
+        if(TotalTime < 0){
+         return 24*60 + TotalTime
+          //  return -1
+        }
+        else{
+        
+
+        return endTotalMinutes - startTotalMinutes;}
+    }
+
+    // Display travel time
+    function displayTravelTime(time) {
+        const travelTimeElement = document.getElementById('travelTime');
+        travelTimeElement.textContent = `Czas przejazdu: ${time} minut`;
+    }
+
+    // Handle the route selection and drawing
+    document.getElementById('fetchRoute').addEventListener('click', () => {
+        const routeId = document.getElementById('routeSelect').value;
+        if (routeId) {
+            fetchRouteData(routeId);
+            fetchStopTimes(routeId);
+        } else {
+            alert('Please select a Route ID');
+        }
+    });
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "heatmapa-trojmiasto",
+  "version": "1.0.0",
+  "description": "Define datastructure for the map\r The project needs a well defined datastructure to work with generating the heat map and finding the most optimal path.",
+  "main": "proxy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cors": "^2.8.5",
+    "express": "^4.21.0"
+  }
+}

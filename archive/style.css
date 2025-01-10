@@ -1,0 +1,55 @@
+body {
+    margin: 0;
+}
+
+#map {
+    height: 700px; /* Increased the height of the map */
+    width: 100%;
+    position: relative;
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    left: 70px;
+    border: 2px solid black;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.active {
+    background-color: gray;
+}
+
+.info {
+    position: absolute;
+    top: 70px;
+    left: 70px;
+    display: none;
+    background-color: white;
+    border: 1px solid black;
+    padding: 5px;
+    z-index: 1000;
+}
+
+#controls {
+    margin: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+select, input {
+    padding: 5px;
+    margin-right: 5px; /* Reduce margin between elements */
+}
+
+.red-alert {
+    background-color: red;
+    color: white;
+}

@@ -1,0 +1,7 @@
+[
+    { "latitude": 54.63, "longitude": 18.884999999999998, "name": "Point 1" },
+    { "lat": "54.540 N", "lon": "18.640 E", "name": "Point 2" },
+    { "latitude": 54.55, "longitude": 18.68, "name": "Point 3" },
+    { "lat": "54.5 N", "lon": "18.67 E", "name": "Point 4" },
+    { "latitude": 54.500, "longitude": 18.500, "name": "Point 5" }
+]
