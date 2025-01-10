@@ -23,6 +23,17 @@ The heatmap is generated dynamically within **5 seconds**, leveraging a custom r
 
 ---
 
+## Screenshots  
+Below are some screenshots showcasing the application's interface and functionality:  
+
+1. **Main Page**:  
+   ![Main Page](path/to/login.png)  
+
+1. **Heatmap Overview**:  
+   ![Heatmap Overview](path/to/dashboard.png)  
+
+---
+
 ## Applications  
 - Identifying underutilized or poorly connected areas in the public transport network.  
 - Supporting urban planning and decision-making by highlighting "dead zones" in transportation.  
