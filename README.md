@@ -40,8 +40,7 @@ The heatmap is generated dynamically within **5 seconds**, leveraging a custom r
 ## My Contribution  
 I was responsible for developing the **backend** of the application, which included:  
 - Designing and implementing the custom routing algorithm using a graph-based approach.  
-- Integrating static and real-time transportation data from ZTM, SKM, and traffic APIs.  
-- Optimizing the backend to ensure heatmap generation within the 5-second performance benchmark.  
+- Integrating static and real-time transportation data from ZTM, SKM 
 - Managing data processing and API interactions to support the frontend application.  
 
 This project demonstrates strong backend development skills, including algorithm implementation, data integration, and performance optimization.
