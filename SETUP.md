@@ -24,8 +24,7 @@ Before you start, make sure you have the following software installed:
 ## Setup
 
 ### 1. Clone the Heatmap Project from GitHub
-Clone the project repository to your local machine:
-git clone https://git.pg.edu.pl/p1348918/heatmapa-trojmiasto.git
+Clone the project repository to your local machine
 
 ### 2. Navigate to the `app` Directory
 Open project and go to the `app` directory:
