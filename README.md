@@ -33,8 +33,7 @@ The heatmap is generated dynamically within **5 seconds**, leveraging a custom r
 ## Tech Stack  
 - **Backend**: Python  
 - **Frontend**: React.js, Leaflet  
-- **Data Sources**: ZTM APIs, SKM schedules, Google/HERE traffic data  
-- **Infrastructure**: Google Cloud, Docker  
+- **Data Sources**: ZTM APIs, SKM schedules
 
 ---
 
