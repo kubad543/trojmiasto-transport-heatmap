@@ -1,5 +1,16 @@
 # Heatmap - Trójmiasto  
 
+## Screenshots  
+Below are some screenshots showcasing the application's interface and functionality:  
+
+1. **Main Page**:  
+   ![Main Page](login.png)  
+
+1. **Heatmap Overview**:  
+   ![Heatmap Overview](dashboard.png)  
+
+---
+
 ## Overview  
 **Heatmap - Trójmiasto** is an innovative application designed to visualize travel times across the Tricity area. The project aims to improve the understanding of urban transport efficiency by generating heatmaps that display travel accessibility for selected locations and times. The application combines real-time and static transportation data to provide a comprehensive and accurate view of the public transport network.  
 
@@ -20,17 +31,6 @@ The heatmap is generated dynamically within **5 seconds**, leveraging a custom r
   Users can select a starting point, time, and mode of transport (bus, tram, train) through an intuitive UI.  
 - **High Performance**:  
   Ensures graph creation and heatmap calculations are efficient, delivering results in under 10 seconds.  
-
----
-
-## Screenshots  
-Below are some screenshots showcasing the application's interface and functionality:  
-
-1. **Main Page**:  
-   ![Main Page](login.png)  
-
-1. **Heatmap Overview**:  
-   ![Heatmap Overview](dashboard.png)  
 
 ---
 
